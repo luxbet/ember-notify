@@ -1,18 +1,19 @@
 import Ember from 'ember';
 
-function aliasToShow(type) {
-  return function(message, options) {
+function aliasToShow(type, options) {
+  return function(message, userOptions) {
+    Ember.merge(options, userOptions);
     return this.show(type, message, options);
   };
 }
 
 var Notify = Ember.Object.extend({
 
-  info: aliasToShow('info'),
-  success: aliasToShow('success'),
-  warning: aliasToShow('warning'),
+  info: aliasToShow('info', {closeAfter: 5000}),
+  success: aliasToShow('success', {closeAfter: 5000}),
+  warning: aliasToShow('warning', {closeAfter: 15000}),
   alert: aliasToShow('alert'),
-  error: aliasToShow('error'),
+  error: aliasToShow('error', {closeAfter: 20000}),
 
   init: function() {
     this.pending = [];
