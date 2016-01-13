@@ -54,12 +54,12 @@ var Notify = Ember.Object.extend({
     });
   },
 
-  target: function(key, val) {
-    if (arguments.length === 2) {
-      this.showPending(val);
-    }
-    return val;
-  }.property(),
+  target: Ember.computed({
+  	set: function (key, val) {
+  		this.showPending(val);
+  		return val;
+  	}
+  }),
 
   showPending: function(target) {
     this.pending.map(function(pending) {
@@ -84,16 +84,16 @@ export default Notify.extend({
   create: function() {
     return Notify.create();
   },
-  target: function(key, val) {
-    if (arguments.length === 2) {
-      Ember.assert("Only one {{ember-notify}} should be used without a source property. " +
-        "If you want more than one then use {{ember-notify source=someProperty}}",
-        !this._primary || this._primary.get('isDestroyed')
-      );
-      this.showPending(val);
-    }
-    return val;
-  }.property()
+  target: Ember.computed({
+  	set: function(key, val) {
+  		Ember.assert("Only one {{ember-notify}} should be used without a source property. " +
+  		  "If you want more than one then use {{ember-notify source=someProperty}}",
+  		  !this._primary || this._primary.get('isDestroyed')
+  		);
+  		this.showPending(val);
+  		return val;
+  	}
+  }),
 
 }).create();
 
