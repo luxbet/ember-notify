@@ -1,9 +1,9 @@
-.ember-notify-default.ember-notify-cn {
+/*.ember-notify-default.ember-notify-cn {
   position: fixed;
   z-index: 5000;
   bottom: 0px;
   right: 0px;
-}
+}*/
 
 .ember-notify-default .ember-notify {
   display: block;
