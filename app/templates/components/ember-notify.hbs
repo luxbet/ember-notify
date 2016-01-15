@@ -1,7 +1,0 @@
-{{#each message in messages}}
-  {{#view view.messageClass message=message closeAfter=closeAfter class='clearfix'}}
-    <a {{action 'close' target='view'}} class='close'>&times;</a>
-    <span class='count'>{{messages.length}} left </span>
-    <span class='message'>{{message.message}}{{{message.raw}}}</span>
-  {{/view}}
-{{/each}}

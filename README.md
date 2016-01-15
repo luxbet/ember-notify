@@ -6,27 +6,38 @@
 
 `ember-notify` displays wee little notification messages down the bottom of your Ember.js app.
 
-The CSS classes are compatible with Zurb Foundation 5, or you can use Bootstrap styling using `{{ember-notify messageStyle='bootstrap'}}`.
+### Compatibility
+ 
+ember-notify is compatible with the following presentation frameworks:
 
-The CSS animations are inspired by CSS from [alertify.js](http://fabien-d.github.io/alertify.js/).
+- Zurb Foundation (default)
+- Thoughtbot Refills: `{{ember-notify messageStyle='refills'}}`
+- Twitter Bootstrap: `{{ember-notify messageStyle='bootstrap'}}`
+- Semantic-UI: `{{ember-notify messageStyle='semantic-ui'}}`
+
+The CSS animations are inspired by CSS from [alertify.js](http://fabien-d.github.io/alertify.js/). You can also customize the positioning and animations by overriding the default `ember-notify` CSS class. For usage, see the [animations example](#custom-animations).
 
 ## Usage
 
-1. Add `{{ember-notify}}` to one of your templates, usually in `application.hbs`.
-2. Use `this.notify` in routes or controllers to display messages: 
+1. Add `{{ember-notify}}` to one of your templates, usually in `application.hbs`
+2. Inject the `notify` service
+3. Display messages using the `info`, `success`, `warning`, `alert` and `error` methods
+ 
+### Examples
 
 ```js
-this.notify.info('Hello there!');
-this.notify.alert('This is an alert.');
-this.notify.success('It worked.');
-this.notify.warning('Hmmn, that didn\'t work out.');
-```
-
-If you're not in a route or a controller you can use the `Notify` helper: 
-
-```js
-import Notify from 'ember-notify';
-Notify.info('Peace.');
+import {
+  Component,
+  inject
+} from 'ember';
+export default Component.extend({
+  notify: inject.service('notify'),
+  actions: {
+    sayHello() {
+      this.get('notify').info('Hello there!');
+    }
+  }
+});
 ```
 
 By default the notifications close after 2.5 seconds, although you can control this in your template:
@@ -38,42 +49,53 @@ By default the notifications close after 2.5 seconds, although you can control t
 Or you can control when each message is closed:
 
 ```js
-var message = Notify.alert('You can control how long it\'s displayed', {
+var notify = this.get('notify');
+var message = notify.alert('You can control how long it\'s displayed', {
   closeAfter: 10000 // or set to null to disable auto-hiding
 });
-message.set('visible', false); // and you can hide messages programmatically.
 ```
 
-The Notify methods (`info`, `success`, `warning`, `alert` and `error`) all return a Promise for an instance of `Message`. You can use this object to change the `message` property, or to programatically hide the message by setting `visible` to `false`.
+...and you can hide messages programmatically:
+
+```js
+message.set('visible', false);
+```
 
 You can specify raw HTML:
 
 ```js
-Notify.info({raw: '<div class="my-div">Hooray!</div>'});
+notify.info({html: '<div class="my-div">Hooray!</div>'});
 ```
 
 Rounded corners, if that's your thing:
 
 ```js
-Notify.alert('This one\'s got rounded corners.', {
+notify.alert('This one\'s got rounded corners.', {
   radius: true
 });
+```
+
+### Initializer
+
+If you prefer not to call `Ember.inject.service('notify')` you can use an initializer:
+
+```js
+// app/initializers/ember-notify.js
+export {default} from 'ember-notify/initializer';
 ```
 
 ### Multiple Containers
 
 If you want to have separate notifications and control where they're inserted into the DOM you can 
-have multiple `{{ember-notify}}` components, but only one of them can be accessed using the `Notify` helper. The others you will need to provide a `source` property.
-
-Secondary containers should be used as follows:
+have multiple `{{ember-notify}}` components, but only one of them can be accessed using the injected service.
+The others you will need to provide a `source` property, so secondary containers should be used as follows:
 
 ```hbs
 {{ember-notify source=someProperty}} 
 ```
 
 ```js
-// in your controller
-export default Ember.Controller.extend({
+export default Ember.Component.extend({
   someProperty: Notify.property(), // or this.set('someProperty', Notify.create())
   actions: {
     clicked: function() {
@@ -82,10 +104,38 @@ export default Ember.Controller.extend({
   }
 });
 ```
+### Custom Animations 
+By default, the `ember-notify` message window will appear from the bottom right corner of the screen.  You may want to control the postioning or animations.
+To do so, you need to pass a CSS class name using the `classPrefix` option. This will render the top level `ember-notify` element with the class you pass in.
 
+```hbs
+<!-- gives class="ember-view ember-notify-cn custom-notify"> to top level element-->
+{{ember-notify classPrefix="custom-notify"}}
+
+```
+Then you need to add custom styling for each of the elements within the `ember-notify` structure.
+The following snippet summarizes rules needed for a custom look. For a complete example that you can drop into your project, see [examples/custom-position-animations.css](examples/custom-position-animations.css)
+```css
+/* main container */
+.custom-notify {
+	position: fixed;
+	top: 10px;
+	right: 0;
+	left: 0;
+}
+/* message box */
+.custom-notify .alert-box {
+	position: relative;
+	overflow: hidden;
+}
+/* classes applied for animating in/out */
+.custom-notify .ember-notify-show {}
+.custom-notify .ember-notify-hide {}
+
+```
 ## Installation
 
-This module is an ember-cli addon, so all you need to do is:
+This module is an ember-cli addon, so installation is easy as pie.
 
 ```sh
 npm install ember-notify --save-dev
@@ -95,6 +145,6 @@ npm install ember-notify --save-dev
 
 See [the CHANGELOG](https://github.com/aexmachina/ember-notify/blob/master/CHANGELOG.md).
 
-## Compatibility
+## Browser Compatibility
 
 Some users have reported issues with IE8, so this is currently not supported.
