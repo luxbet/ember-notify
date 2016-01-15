@@ -9,11 +9,11 @@ function aliasToShow(type) {
 
 var Notify = Ember.Service.extend({
 
-  info: aliasToShow('info'),
-  success: aliasToShow('success'),
-  warning: aliasToShow('warning'),
-  alert: aliasToShow('alert'),
-  error: aliasToShow('error'),
+  info: aliasToShow("info", { closeAfter: 5000 }),
+  success: aliasToShow("success", { closeAfter: 5000 }),
+  warning: aliasToShow("warning", { closeAfter: 15000 }),
+  alert: aliasToShow("alert"),
+  error: aliasToShow("error", { closeAfter: 20000 }),
 
   init() {
     this.pending = [];
