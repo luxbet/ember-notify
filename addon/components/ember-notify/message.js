@@ -4,11 +4,12 @@ import Notify from 'ember-notify';
 
 export default Ember.Component.extend({
   layout: layout,
-  message: null,
+  message: {},
   closeAfter: null,
 
   classNameBindings: [
-    'message.visible:ember-notify-show:ember-notify-hide', 'radius::', 'themeClassNames'
+    'message.visible:ember-notify-show:ember-notify-hide', 'radius::', 'themeClassNames',
+    'message.classNames'
   ],
   attributeBindings: ['data-alert'],
   'data-alert': '',

@@ -21,15 +21,17 @@ var Notify = Ember.Service.extend({
   },
 
   show(type, text, options) {
+    var assign = Ember.assign || Ember.merge;
+
     // If the text passed is `SafeString`, convert it
-    if (text instanceof Ember.Handlebars.SafeString) {
+    if (Ember.String.isHTMLSafe(text)) {
       text = text.toString();
     }
     if (typeof text === 'object') {
       options = text;
       text = null;
     }
-    var message = Message.create(Ember.merge({
+    var message = Message.create(assign({
       text: text,
       type: type
     }, options));
